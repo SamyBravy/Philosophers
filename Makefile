@@ -16,7 +16,7 @@ SRC = ./philo/main.c
 # SRC_B = ./philo_bonus/main_bonus.c
 OBJ = $(SRC:.c=.o)
 # OBJ_B = $(SRC_B:.c=.o)
-FLAGS = -g -Wall -Wextra -Werror
+FLAGS = -g -Wall -Wextra -Werror -pthread
 CC = cc
 
 all: $(NAME)
