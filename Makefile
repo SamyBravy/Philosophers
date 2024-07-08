@@ -33,10 +33,10 @@ $(NAME): $(OBJ)
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	@rm -f $(OBJ) #$(OBJ_B)
+	rm -f $(OBJ) $(OBJ_B)
 
 fclean: clean
-	@rm -f $(NAME) #$(NAME_BONUS)
+	rm -f $(NAME) $(NAME_BONUS)
 
 re: fclean all
 
