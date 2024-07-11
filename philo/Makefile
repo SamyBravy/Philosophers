@@ -6,14 +6,14 @@
 #    By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 19:17:18 by sdell-er          #+#    #+#              #
-#    Updated: 2024/03/12 17:44:43 by sdell-er         ###   ########.fr        #
+#    Updated: 2024/07/11 13:27:17 by sdell-er         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philos
+NAME = philo
 # NAME_BONUS = philo_bonus
-SRC = ./philo/main.c
-# SRC_B = ./philo_bonus/main_bonus.c
+SRC = ./main.c
+# SRC_B = ./main_bonus.c
 OBJ = $(SRC:.c=.o)
 # OBJ_B = $(SRC_B:.c=.o)
 FLAGS = -g -Wall -Wextra -Werror -pthread
