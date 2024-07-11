@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 19:09:34 by samy_bravy        #+#    #+#             */
-/*   Updated: 2024/07/11 13:48:31 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/07/11 14:34:14 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,6 @@ int	init_mutexes(t_philo *philo)
 	i = 0;
 	while (i < philo->nb_philo)
 		pthread_mutex_init(&(philo->forks[i++]), NULL);
-	philo->last_meals_mutex = malloc(sizeof(pthread_mutex_t) * philo->nb_philo);
-	if (!philo->last_meals_mutex)
-	{
-		i = 0;
-		while (i < philo->nb_philo)
-			pthread_mutex_destroy(&(philo->forks[i++]));
-		pthread_mutex_destroy(&(philo->mutex));
-		free(philo->forks);
-		free(philo->last_meals);
-		return (printf("Error: malloc failed\n"));
-	}
-	i = 0;
-	while (i < philo->nb_philo)
-		pthread_mutex_init(&(philo->last_meals_mutex[i++]), NULL);
 	return (0);
 }
 
@@ -125,19 +111,10 @@ int	parsing(t_philo *philo, int argc, char **argv, pthread_t **philo_threads)
 	else
 		philo->nb_eat = -1;
 	gettimeofday(&(philo->tv), NULL);
-	philo->dead = 0;
-	philo->finished = 0;
 	*philo_threads = malloc(sizeof(pthread_t) * philo->nb_philo);
 	if (!*philo_threads)
 		return (printf("Error: malloc failed\n"));
 	philo->i = 1;
-	philo->last_meals = malloc(sizeof(long int) * philo->nb_philo);
-	if (!philo->last_meals)
-	{
-		free(philo->forks);
-		return (printf("Error: malloc failed\n"));
-	}
-	memset(philo->last_meals, 0, sizeof(long int) * philo->nb_philo);
 	if (init_mutexes(philo))
 	{
 		free(*philo_threads);
@@ -154,18 +131,6 @@ long int	get_time(struct timeval tv)
 	return ((current.tv_sec - tv.tv_sec) * 1000 + (current.tv_usec - tv.tv_usec) / 1000);
 }
 
-int	check_death(t_philo *philo)
-{
-	int	dead;
-
-	dead = 0;
-	pthread_mutex_lock(&(philo->mutex));
-	if (philo->dead)
-		dead = 1;
-	pthread_mutex_unlock(&(philo->mutex));
-	return (dead);
-}
-
 void	*philosopher(void *philo)
 {
 	int				i;
@@ -177,65 +142,19 @@ void	*philosopher(void *philo)
 	eaten = 0;
 	while (((t_philo *)philo)->nb_eat == -1 || eaten++ < ((t_philo *)philo)->nb_eat)
 	{
-		//if (check_death((t_philo *)philo))
-		//	return (NULL);
 		printf(YELLOW"%ld %d is thinking\n"END, get_time(((t_philo *)philo)->tv), i);
 		pthread_mutex_lock(&(((t_philo *)philo)->forks[(i - 1)]));
 		pthread_mutex_lock(&(((t_philo *)philo)->forks[i % ((t_philo *)philo)->nb_philo]));
-		//if (check_death((t_philo *)philo))
-		//	return (NULL);
 		printf("%ld %d has taken a fork\n", get_time(((t_philo *)philo)->tv), i);
 		printf("%ld %d has taken a fork\n", get_time(((t_philo *)philo)->tv), i);
-		pthread_mutex_lock(&(((t_philo *)philo)->last_meals_mutex[i - 1]));
-		((t_philo *)philo)->last_meals[i - 1] = get_time(((t_philo *)philo)->tv);
-		pthread_mutex_unlock(&(((t_philo *)philo)->last_meals_mutex[i - 1]));
-		printf(GREEN"%ld %d is eating\n"END, ((t_philo *)philo)->last_meals[i - 1], i);
+		printf(GREEN"%ld %d is eating\n"END, get_time(((t_philo *)philo)->tv), i);
 		usleep(((t_philo *)philo)->time_to_eat * 1000);
-		//if (check_death((t_philo *)philo))
-		//	return (NULL);
 		pthread_mutex_unlock(&(((t_philo *)philo)->forks[i % ((t_philo *)philo)->nb_philo]));
 		pthread_mutex_unlock(&(((t_philo *)philo)->forks[(i - 1)]));
-		//if (check_death((t_philo *)philo))
-		//	return (NULL);
 		printf(BLUE"%ld %d is sleeping\n"END, get_time(((t_philo *)philo)->tv), i);
 		usleep(((t_philo *)philo)->time_to_sleep * 1000);
 	}
-	pthread_mutex_lock(&(((t_philo *)philo)->mutex));
-	((t_philo *)philo)->finished++;
-	pthread_mutex_unlock(&(((t_philo *)philo)->mutex));
-	return (NULL);
-}
-
-void	*check_deaths(void *philo)
-{
-	int	i;
-
-	pthread_mutex_lock(&(((t_philo *)philo)->mutex));
-	i = ((t_philo *)philo)->i++;
-	pthread_mutex_unlock(&(((t_philo *)philo)->mutex));
-	while (1)
-	{
-		// usleep(5 * 1000);
-		pthread_mutex_lock(&(((t_philo *)philo)->mutex));
-		if (((t_philo *)philo)->finished == ((t_philo *)philo)->nb_philo)
-		{
-			pthread_mutex_unlock(&(((t_philo *)philo)->mutex));
-			return (NULL);
-		}
-		pthread_mutex_unlock(&(((t_philo *)philo)->mutex));
-		pthread_mutex_lock(&(((t_philo *)philo)->last_meals_mutex[i - 1]));
-		if (get_time(((t_philo *)philo)->tv) - ((t_philo *)philo)->last_meals[i - 1] > ((t_philo *)philo)->time_to_die)
-		{
-			pthread_mutex_lock(&(((t_philo *)philo)->mutex));
-			((t_philo *)philo)->dead = 1;
-			// printf("actual time: %ld\n last meal: %ld\n", get_time(((t_philo *)philo)->tv), ((t_philo *)philo)->last_meals[i - 1]);
-			printf(RED"%ld %d died\n"END, get_time(((t_philo *)philo)->tv), i);
-			pthread_mutex_unlock(&(((t_philo *)philo)->mutex));
-			pthread_mutex_unlock(&(((t_philo *)philo)->last_meals_mutex[i - 1]));
-			return (NULL);
-		}
-		pthread_mutex_unlock(&(((t_philo *)philo)->last_meals_mutex[i - 1]));
-	}
+	printf(YELLOW"%ld %d is thinking\n"END, get_time(((t_philo *)philo)->tv), i);
 	return (NULL);
 }
 
@@ -243,7 +162,6 @@ int	main(int argc, char **argv)
 {
 	t_philo		philo;
 	pthread_t	*philo_threads;
-	//pthread_t	*check_deaths_thread;
 	int			i;
 
 	if (parsing(&philo, argc, argv, &philo_threads))
@@ -252,13 +170,6 @@ int	main(int argc, char **argv)
 	while (i < philo.nb_philo)
 		pthread_create(&(philo_threads[i++]), NULL, &philosopher, &philo);
 	philo.i = 0;
-	/*check_deaths_thread = malloc(sizeof(pthread_t) * philo.nb_philo);
-	i = -1;
-	while (++i < philo.nb_philo)
-		pthread_create(&(check_deaths_thread[i]), NULL, &check_deaths, &philo)
-	i = -1;
-	while (++i < philo.nb_philo)
-		pthread_join(check_deaths_thread[i++], NULL);*/
 	i = -1;
 	while (++i < philo.nb_philo)
 		pthread_join(philo_threads[i++], NULL);
@@ -268,5 +179,6 @@ int	main(int argc, char **argv)
 		pthread_mutex_destroy(&(philo.forks[i]));
 	free(philo.forks);
 	free(philo_threads);
+	printf("All philosophers have eaten enough\n");
 	return (0);
 }

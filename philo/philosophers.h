@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 11:48:46 by marvin            #+#    #+#             */
-/*   Updated: 2024/07/11 13:20:56 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/07/11 14:31:54 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,13 @@
 
 typedef struct s_philo
 {
-	int				dead;
 	int				i;
-	long int		*last_meals;
-	int				finished;
 	int				nb_philo;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				nb_eat;
 	struct timeval	tv;
-	pthread_mutex_t	*last_meals_mutex;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	*forks;
 }	t_philo;
