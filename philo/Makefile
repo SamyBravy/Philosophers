@@ -6,7 +6,7 @@
 #    By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 19:17:18 by sdell-er          #+#    #+#              #
-#    Updated: 2024/07/11 13:27:17 by sdell-er         ###   ########.fr        #
+#    Updated: 2024/07/12 11:53:35 by sdell-er         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRC = ./main.c
 # SRC_B = ./main_bonus.c
 OBJ = $(SRC:.c=.o)
 # OBJ_B = $(SRC_B:.c=.o)
-FLAGS = -g -Wall -Wextra -Werror -pthread
+FLAGS = -g -Wall -Wextra -Werror -pthread #-fsanitize=thread
 CC = cc
 
 all: $(NAME)
