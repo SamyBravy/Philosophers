@@ -12,7 +12,7 @@
 
 NAME = philo
 # NAME_BONUS = philo_bonus
-SRC = ./main.c
+SRC = ./main.c ./philosopher.c ./parsing.c ./philo_utils.c ./check_starvation.c
 # SRC_B = ./main_bonus.c
 OBJ = $(SRC:.c=.o)
 # OBJ_B = $(SRC_B:.c=.o)

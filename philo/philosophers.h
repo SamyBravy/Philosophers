@@ -30,6 +30,7 @@ typedef struct s_philo
 {
 	int				i;
 	int				dead;
+	int				*started_eating;
 	int				nb_philo;
 	int				time_to_die;
 	int				time_to_eat;
@@ -39,6 +40,20 @@ typedef struct s_philo
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	print;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*started_eating_mutex;
 }	t_philo;
+
+void		*philosopher(void *philosopher);
+
+int			parsing(int argc, char **argv);
+int			ft_atoi(const char *nptr);
+
+int			check_starvation(t_philo *philo, int i, int last_meal);
+
+int			get_i_fork(int nb_philo, int i, int k);
+int			get_i_started_eating(int nb_philo, int i, int k);
+int			print(t_philo *philo, int i, char *str);
+int			unlock_mutex(t_philo *philo, int i, int k);
+long int	get_time(struct timeval tv);
 
 #endif
