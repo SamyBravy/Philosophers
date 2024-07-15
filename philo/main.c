@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/01 19:09:34 by samy_bravy        #+#    #+#             */
-/*   Updated: 2024/07/12 15:15:24 by sdell-er         ###   ########.fr       */
+/*   Created: 2024/07/15 14:23:33 by sdell-er          #+#    #+#             */
+/*   Updated: 2024/07/15 14:23:34 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,5 @@ int	main(int argc, char **argv)
 	while (++i < philo.nb_philo)
 		pthread_join(philo_threads[i], NULL);
 	destroy(&philo, &philo_threads);
-	printf("End\n");
 	return (0);
 }

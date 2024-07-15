@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/15 00:45:27 by marvin            #+#    #+#             */
-/*   Updated: 2024/07/15 00:45:27 by marvin           ###   ########.fr       */
+/*   Created: 2024/07/15 14:25:02 by sdell-er          #+#    #+#             */
+/*   Updated: 2024/07/15 17:12:24 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ static int	eat(t_philo *philo, int i, int eaten, int *last_meal)
 
 static int	go_to_sleep(t_philo *philo, int i)
 {
+	if (print(philo, i, SLEEP))
+		return (1);
 	if (philo->time_to_sleep + philo->time_to_eat >= philo->time_to_die)
 	{
 		usleep(philo->time_to_die - philo->time_to_eat);
@@ -101,8 +103,7 @@ void	*philosopher(void *philosopher)
 	while (philo->nb_eat == -1 || eaten++ < philo->nb_eat)
 	{
 		if (get_forks(philo, i, last_meal) || eat(philo, i, eaten, &last_meal)
-			|| print(philo, i, SLEEP) || go_to_sleep(philo, i)
-			|| print(philo, i, THINK))
+			|| go_to_sleep(philo, i) || print(philo, i, THINK))
 			return (NULL);
 	}
 	return (NULL);
