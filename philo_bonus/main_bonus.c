@@ -34,17 +34,36 @@ int	ft_atoi(const char *nptr)
 	return (res * i);
 }
 
+char	*create_string(int i)
+{
+	static char	str[2];
+
+	str[0] = 1 + i;
+	str[1] = '\0';
+	return (str);
+}
+
 static void	destroy(t_philo *philo)
 {
 	sem_close(philo->forks);
 	sem_close(philo->print);
 	sem_close(philo->dead_sem);
 	sem_close(philo->is_dead);
+	sem_close(philo->last_meal_sem);
+	sem_close(philo->eaten_sem);
+	philo->i = 0;
+	while (philo->i < philo->nb_philo)
+		sem_close(philo->finished_eating[philo->i++]);
 	sem_unlink("forks");
 	sem_unlink("print");
 	sem_unlink("dead_sem");
 	sem_unlink("is_dead");
 	sem_unlink("last_meal");
+	sem_unlink("eaten_sem");
+	philo->i = 0;
+	while (philo->i < philo->nb_philo)
+		sem_unlink(create_string(philo->i++));
+	free(philo->finished_eating);
 }
 
 static void	init(t_philo *philo, int argc, char **argv)
@@ -56,19 +75,30 @@ static void	init(t_philo *philo, int argc, char **argv)
 	philo->nb_eat = -1;
 	if (argc == 6)
 		philo->nb_eat = ft_atoi(argv[5]);
+	philo->dead = 0;
+	philo->last_meal = 0;
+	philo->eaten = 0;
 	sem_unlink("forks");
 	sem_unlink("print");
 	sem_unlink("dead_sem");
 	sem_unlink("is_dead");
 	sem_unlink("last_meal");
+	sem_unlink("eaten_sem");
 	philo->forks = sem_open("forks", O_CREAT, 0644, philo->nb_philo);
 	philo->print = sem_open("print", O_CREAT, 0644, 1);
 	philo->dead_sem = sem_open("dead_sem", O_CREAT, 0644, 1);
 	philo->is_dead = sem_open("is_dead", O_CREAT, 0644, 1);
-	philo->last_meal_sem = sem_open("last_meal", O_CREAT, 0644, 1);
 	sem_wait(philo->is_dead);
-	philo->dead = 0;
-	philo->last_meal = 0;
+	philo->last_meal_sem = sem_open("last_meal", O_CREAT, 0644, 1);
+	philo->eaten_sem = sem_open("eaten_sem", O_CREAT, 0644, 1);
+	philo->finished_eating = malloc(sizeof(sem_t *) * philo->nb_philo);
+	philo->i = 0;
+	while (philo->i < philo->nb_philo)
+	{
+		philo->finished_eating[philo->i]
+			= sem_open(create_string(philo->i), O_CREAT, 0644, 1);
+		sem_wait(philo->finished_eating[philo->i++]);
+	}
 	gettimeofday(&(philo->tv), NULL);
 }
 

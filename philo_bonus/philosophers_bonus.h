@@ -34,13 +34,16 @@ typedef struct s_philo
 	int				i;
 	int				dead;
 	int				last_meal;
+	int				eaten;
 	sem_t			*forks;
 	sem_t			*is_dead;
+	sem_t			**finished_eating;
 	int				nb_philo;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				nb_eat;
+	sem_t			*eaten_sem;
 	sem_t			*last_meal_sem;
 	sem_t			*dead_sem;
 	sem_t			*print;

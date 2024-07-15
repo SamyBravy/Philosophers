@@ -41,12 +41,7 @@ void	*check_death(void *philosopher)
 	sem_wait(philo->is_dead);
 	sem_post(philo->is_dead);
 	sem_wait(philo->dead_sem);
-	if (philo->dead)
-	{
-		sem_post(philo->dead_sem);
-		return (NULL);
-	}
-	philo->dead = -42;
+	philo->dead = philo->i;
 	sem_post(philo->dead_sem);
 	return (NULL);
 }
@@ -56,6 +51,42 @@ void	*check_starvation(void *philosopher)
 	t_philo	*philo;
 
 	philo = (t_philo *)philosopher;
-	
+	while (1)
+	{
+		sem_wait(philo->dead_sem);
+		if (philo->dead)
+		{
+			sem_post(philo->dead_sem);
+			return (NULL);
+		}
+		sem_post(philo->dead_sem);
+		sem_wait(philo->eaten_sem);
+		if (philo->nb_eat != -1 && philo->eaten)
+		{
+			sem_post(philo->eaten_sem);
+			return (NULL);
+		}
+		sem_post(philo->eaten_sem);
+		sem_wait(philo->last_meal_sem);
+		if (get_time(philo->tv) - philo->last_meal > philo->time_to_die / 1000)
+		{
+			sem_post(philo->last_meal_sem);
+			sem_wait(philo->dead_sem);
+			if (philo->dead)
+			{
+				sem_post(philo->dead_sem);
+				return (NULL);
+			}
+			philo->dead = philo->i;
+			sem_wait(philo->print);
+			printf("%ld %d %s\n", get_time(philo->tv), philo->i, DIE);
+			sem_post(philo->print);
+			sem_post(philo->dead_sem);
+			sem_post(philo->is_dead);
+			return (NULL);
+		}
+		sem_post(philo->last_meal_sem);
+		usleep(1000);
+	}
 	return (NULL);
 }
