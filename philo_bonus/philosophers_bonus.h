@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 14:23:01 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/07/15 19:21:52 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:29:26 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,19 @@ typedef struct s_philo
 	sem_t			*last_meal_sem;
 	sem_t			*dead_sem;
 	sem_t			*print;
+	int				j;
 	struct timeval	tv;
 }	t_philo;
 
 int			parsing(int argc, char **argv);
 
-int			ft_atoi(const char *nptr);
-
 void		philosopher(t_philo *philo);
 
+int			ft_atoi(const char *nptr);
 long int	get_time(struct timeval tv);
 int			print(t_philo *philo, char *str);
+void		wait_finished_eating(t_philo *philo);
+
 void		*check_death(void *philo);
 void		*check_starvation(void *philosopher);
 

@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 14:22:37 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/07/15 19:22:36 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:27:22 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,14 @@ void	philosopher(t_philo *philo)
 	pthread_create(&check_death_thread, NULL, check_death, philo);
 	pthread_create(&check_starvation_thread, NULL, check_starvation, philo);
 	while (philo->nb_eat == -1 || eaten++ < philo->nb_eat)
-	{
 		if (get_forks(philo) || eat(philo, eaten, &last_meal)
 			|| go_to_sleep(philo) || print(philo, THINK))
 			break ;
-	}
-	philo->i = 0;
-	while (philo->i < philo->nb_philo)
-	{
-		sem_wait(philo->finished_eating[philo->i]);
-		sem_post(philo->finished_eating[philo->i++]);
-	}
+	sem_wait(philo->dead_sem);
+	if (philo->dead == philo->i)
+		sem_post(philo->print);
+	sem_post(philo->dead_sem);
+	wait_finished_eating(philo);
 	sem_post(philo->is_dead);
 	pthread_join(check_starvation_thread, NULL);
 	pthread_join(check_death_thread, NULL);
