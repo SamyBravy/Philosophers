@@ -68,7 +68,8 @@ void	*check_starvation(void *philosopher)
 		}
 		sem_post(philo->eaten_sem);
 		sem_wait(philo->last_meal_sem);
-		if (get_time(philo->tv) - philo->last_meal > philo->time_to_die / 1000)
+		if (get_time(philo->tv) - philo->last_meal
+			> philo->time_to_die / 1000 + 3)
 		{
 			sem_post(philo->last_meal_sem);
 			sem_wait(philo->dead_sem);
@@ -83,6 +84,9 @@ void	*check_starvation(void *philosopher)
 			sem_post(philo->print);
 			sem_post(philo->dead_sem);
 			sem_post(philo->is_dead);
+			philo->i = 0;
+			while (philo->i < philo->nb_philo)
+				sem_post(philo->finished_eating[philo->i++]);
 			return (NULL);
 		}
 		sem_post(philo->last_meal_sem);

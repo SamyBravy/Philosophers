@@ -38,7 +38,7 @@ char	*create_string(int i)
 {
 	static char	str[2];
 
-	str[0] = 1 + i;
+	str[0] = '0' + i;
 	str[1] = '\0';
 	return (str);
 }
@@ -84,6 +84,9 @@ static void	init(t_philo *philo, int argc, char **argv)
 	sem_unlink("is_dead");
 	sem_unlink("last_meal");
 	sem_unlink("eaten_sem");
+	philo->i = 0;
+	while (philo->i < philo->nb_philo)
+		sem_unlink(create_string(philo->i++));
 	philo->forks = sem_open("forks", O_CREAT, 0644, philo->nb_philo);
 	philo->print = sem_open("print", O_CREAT, 0644, 1);
 	philo->dead_sem = sem_open("dead_sem", O_CREAT, 0644, 1);
