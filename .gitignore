@@ -1,0 +1,14 @@
+# Executables
+philo/philo
+philo_bonus/philo_bonus
+
+# Object files
+*.o
+*.a
+
+# VS Code
+.vscode/
+
+# System
+.DS_Store
+Thumbs.db
