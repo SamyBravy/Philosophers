@@ -56,7 +56,6 @@ The program takes the following arguments:
 # 5 Philosophers, run 7 times each (simulation stops successfully)
 ./philo 5 800 200 200 7
 ```
-=======
 
 # **philo**
 
@@ -95,6 +94,3 @@ Example:
 ```
 ./philo 4 800 200 200
 ```
->>>>>>> cbaf2d2fa8661965687378273229b9b700d04610
-
-
