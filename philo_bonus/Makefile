@@ -19,16 +19,19 @@ CC = cc
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(FLAGS) $(OBJ) -o $(NAME)
+	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) > /dev/null
+	@echo "\e[0;93m[$(NAME)] compiled!\e[0m"
 
 %.o: %.c
-	$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ) > /dev/null
+	@echo "\e[0;91mcleaned!\e[0m"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME) > /dev/null
+	@echo "\e[0;91m[$(NAME)] deleted!\e[0m"
 
 re: fclean all
 
