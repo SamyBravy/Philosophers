@@ -3,7 +3,7 @@
 ![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
 ![Concurrency](https://img.shields.io/badge/Concurrency-Threads%20%26%20Processes-orange?style=for-the-badge)
 
-<img src="simulation_output.png" alt="Philosophers Simulation Output" width="100">
+<img src="simulation_output.png" alt="Philosophers Simulation Output" width="150">
 
 A classic concurrency problem dealing with synchronization, mutexes, and semaphores. The goal is to manage a group of philosophers who alternate between eating, thinking, and sleeping without starving.
 
@@ -96,4 +96,5 @@ Example:
 ./philo 4 800 200 200
 ```
 >>>>>>> cbaf2d2fa8661965687378273229b9b700d04610
+
 
